@@ -3,29 +3,40 @@ import {
   HashRouter,
   Switch,
   Route,
+  Redirect,
 } from "react-router-dom";
-import Auth from "../routes/Auth";
-import Home from "../routes/Home";
+import Auth from "routes/Auth";
+import Home from "routes/Home";
+import Navigation from "components/Navigation";
+import Profile from "routes/Profile";
 
 const Router = ({isLoggedIn}) => {
 
   return (
     <HashRouter>
+      { isLoggedIn && <Navigation/> }
       <Switch>
         {
           isLoggedIn ?
           (
-          <>
-            <Route exact path="/">
-              <Home/>
-            </Route>
-          </>
+            <>
+              <Route exact path="/">
+                <Home/>
+              </Route>
+              <Route exact path="/profile">
+                <Profile/>
+              </Route>
+              {/* <Redirect from="*" to="/" /> */}
+            </>
           )
           :
           (
-          <Route exact path="/">
-            <Auth/>
-          </Route>
+            <>
+              <Route exact path="/">
+                <Auth/>
+              </Route>
+              {/* <Redirect from="*" to="/" /> */}
+            </>
           )
         }
       </Switch>
