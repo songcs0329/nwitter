@@ -10,7 +10,7 @@ import Home from "routes/Home";
 import Navigation from "components/Navigation";
 import Profile from "routes/Profile";
 
-const Router = ({isLoggedIn}) => {
+const Router = ({isLoggedIn, userObj}) => {
 
   return (
     <HashRouter>
@@ -21,7 +21,7 @@ const Router = ({isLoggedIn}) => {
           (
             <>
               <Route exact path="/">
-                <Home/>
+                <Home userObj={userObj}/>
               </Route>
               <Route exact path="/profile">
                 <Profile/>
