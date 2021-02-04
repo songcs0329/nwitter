@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 const Home = ({userObj}) => {
   const [nweet, setNweet] = useState("")
   const [nweets, setNweets] = useState([])
+
+  // 실시간으로 받아오지 못함
   // const getNweets = async () => {
   //   const dbNweets = await dbService.collection("nweets").get()
     
