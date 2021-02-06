@@ -1,3 +1,4 @@
+import Nweet from 'components/Nweet';
 import { dbService } from 'fBase';
 import React, { useEffect, useState } from 'react';
 
@@ -39,9 +40,7 @@ const Home = ({userObj}) => {
     })
     setNweet("")
   }
-  const onChange = (event) => {
-    setNweet(event.target.value)
-  }
+  const onChange = (event) => setNweet(event.target.value)
   
   return (
     <div>
@@ -51,9 +50,11 @@ const Home = ({userObj}) => {
       </form>
       <div>
         {nweets.map(nweet => 
-          <div key={nweet.id}>
-            <h4>{nweet.text}</h4>
-          </div>
+          <Nweet
+            key={nweet.id}
+            nweetObj={nweet}
+            isOwner={nweet.creatorId === userObj.uid}
+          />
         )}
       </div>
     </div>
