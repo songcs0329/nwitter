@@ -1,25 +1,14 @@
 import Nweet from 'components/Nweet';
-import { dbService } from 'fBase';
+import { dbService, storageService } from 'fBase';
 import React, { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 const Home = ({userObj}) => {
   const [nweet, setNweet] = useState("")
   const [nweets, setNweets] = useState([])
+  const [attachment, setAttachment] = useState()
 
-  // 실시간으로 받아오지 못함
-  // const getNweets = async () => {
-  //   const dbNweets = await dbService.collection("nweets").get()
-    
-  //   dbNweets.forEach(document => {
-  //     const nweetObject = {
-  //       ...document.data(),
-  //       id: document.id,
-  //     }
-  //     setNweets(prev => [nweetObject, ...prev])
-  //   })
-  // }
   useEffect(() => {
-    // getNweets()
     dbService.collection("nweets").onSnapshot((snapshot) => {
       const nweetsArray = snapshot.docs.map(doc => {
         return {
@@ -33,20 +22,48 @@ const Home = ({userObj}) => {
 
   const onSubmit = async (event) => {
     event.preventDefault()
-    await dbService.collection("nweets").add({
+    let attachmentUrl = "";
+    if(attachment !== "") {
+      const attachmentRef = storageService.ref().child(`${userObj.uid}/${uuidv4()}`)
+      const response = await attachmentRef.putString(attachment, "data_url")
+      attachmentUrl = await response.ref.getDownloadURL()
+    }
+    const nweetObj = {
       text: nweet,
       createdAt: Date.now(),
       creatorId: userObj.uid,
-    })
+      attachmentUrl
+    }
+    await dbService.collection("nweets").add(nweetObj)
     setNweet("")
+    setAttachment("")
   }
   const onChange = (event) => setNweet(event.target.value)
+  const onFileChange = (event) => {
+    const {target: { files }} = event
+    const theFile = files[0]
+    const reader = new FileReader()
+    reader.onload = (finished) => {
+      const { currentTarget : { result } } = finished
+      setAttachment(result)
+    }
+    reader.readAsDataURL(theFile)
+  }
+  const onClearAttachment = () => setAttachment(null)
   
   return (
     <div>
       <form onSubmit={onSubmit}>
         <input value={nweet} onChange={onChange} type="text" placeholder="What's on your mind?" maxLength={120} />
+        <input type="file" accept="image/*" onChange={onFileChange} />
         <input type="submit" value="Nweet" />
+        { 
+        attachment && 
+        <div>
+          <img src={attachment} width="50px" height="50px" alt="" />
+          <button onClick={onClearAttachment}>Clear</button>
+        </div>
+        }
       </form>
       <div>
         {nweets.map(nweet => 
