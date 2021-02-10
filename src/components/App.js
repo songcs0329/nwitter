@@ -34,7 +34,7 @@ function App() {
       {
         init
         ?
-        <Router isLoggedIn={Boolean(userObj)} userObj={userObj} refreshUser={refreshUser} />
+        <Router isLoggedIn={Boolean(userObj)} userObj={userObj} setUserObj={setUserObj} refreshUser={refreshUser} />
         :
         "Initializing..."
       }
