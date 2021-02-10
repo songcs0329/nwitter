@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 const Profile = ({ userObj, setUserObj, refreshUser }) => {
   const history = useHistory()
-  const [newDisplayName, setNewDisplayName] = useState(userObj.displayName)
+  const [newDisplayName, setNewDisplayName] = useState(userObj.displayName !== null ? userObj.displayName : "")
   const onLogOutClick = () => {
     authService.signOut()
     setUserObj(null)
@@ -24,19 +24,6 @@ const Profile = ({ userObj, setUserObj, refreshUser }) => {
       refreshUser()
     }
   }
-
-  // 작성한 nweets 조회
-  // const getMyNweets = async () => {
-  //   const nweets = await dbService
-  //   .collection('nweets')
-  //   .where("creatorId", "==", userObj.uid)
-  //   .orderBy("createdAt")
-  //   .get()
-  //   console.log(nweets.docs.map(doc => doc.data()))
-  // }
-  // useEffect(() => {
-  //   getMyNweets()
-  // }, [])
 
   return (
     <div className="container">
